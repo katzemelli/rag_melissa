@@ -1,3 +1,6 @@
+# Description: This file contains utility functions used by the main script.
+# The functions are used to download files, read text from files, and get configuration settings from a config file.
+
 import re, os, requests, configparser
 from urllib.parse import unquote, urlparse
 from bs4 import BeautifulSoup

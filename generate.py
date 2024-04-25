@@ -1,12 +1,22 @@
 #demonstration of how to import a collection of embeddings into a Chroma db collection
 #with RAG retrieval augmented generation, the embeddings are used to retrieve relevant documents
+#chroma db is used to store the embeddings and the documents and their metadata
+#the embeddings are generated using the ollama library
+#the documents are read from a list of filenames in a text file
+#the embeddings are generated in chunks of 7 sentences from the documents (feel free to change this)
+#start the chroma db server before running this script
+#chroma run --host localhost --port 8000 --path ../vectordb-stores/chromadb
+#if you want to use a different model, change the embedmodel variable -> see config.ini
+#the embeddings are stored in the collection ma-rag-embeddings and will always be created on startup
+#if your data files are growing, you should consider preserving the collection and only adding new embeddings
+
 
 import ollama, chromadb, time
 from utilities import readtext, getconfig
 from mattsollamatools import chunk_text_by_sentences
 
 collectionname="ma-rag-embeddings"
-#chroma run --host localhost --port 8000 --path ../vectordb-stores/chromadb
+
 chroma = chromadb.HttpClient(host="localhost", port=8000)
 print(chroma.list_collections())
 if any(collection.name == collectionname for collection in chroma.list_collections()):

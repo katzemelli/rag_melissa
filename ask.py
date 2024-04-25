@@ -1,3 +1,6 @@
+# Description: Ask a question to the model and get an answer based on the most relevant document in the collection.
+# you can change n_results to get more than one possible answer
+
 import ollama, sys, chromadb
 from utilities import getconfig
 
