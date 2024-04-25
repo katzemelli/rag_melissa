@@ -4,8 +4,8 @@ how to use rag with ollama
 **Requirements:**
 
 * Python -> see requirements.txt
-* current version of ollama
-* chromadb
+* current version of ollama ( https://ollama.com )
+* chromadb ( https://www.trychroma.com )
 * nltk toolkit installed (see import-nltk.py)
 
 and please install Python in a virual inviroment.
