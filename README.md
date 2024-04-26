@@ -1,6 +1,7 @@
 # rag
 
 how to use rag with ollama
+
 **Requirements:**
 
 * Python -> see requirements.txt
