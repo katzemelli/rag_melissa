@@ -8,7 +8,7 @@ how to use rag with ollama
 * chromadb ( https://www.trychroma.com )
 * nltk toolkit installed (see import-nltk.py)
 
-and please install Python in a virual inviroment.
+and please install Python in a virtual inviroment.
 
 **Usage:**
 
