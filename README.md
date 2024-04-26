@@ -16,4 +16,4 @@ use generate.py to produce the embeddings according to sourcedocs-2.txt
 cli: python generate.py
 
 use aks.py to retrieve information.
-cli: python ask.py "Why is the sky blue?"
+cli: python ask.py "Why is the sky blue?" or something what is related to your docs.
