@@ -20,8 +20,13 @@ collectionname="ma-rag-embeddings"
 chroma = chromadb.HttpClient(host="localhost", port=8000)
 print(chroma.list_collections())
 if any(collection.name == collectionname for collection in chroma.list_collections()):
-  print('deleting collection')
-  chroma.delete_collection(collectionname)
+  # ask the user if they want to delete the collection
+  if input("collection already exists, do you want to delete it? (yes/no)") == "yes":
+    print('deleting collection')  
+    chroma.delete_collection(collectionname)
+  else:
+    print('update the collection')
+      
 collection = chroma.get_or_create_collection(name=collectionname, metadata={"hnsw:space": "cosine"})
 
 embedmodel = getconfig()["embedmodel"]
@@ -35,9 +40,15 @@ with open('sourcedocs-2.txt') as f:
     chunks = chunk_text_by_sentences(source_text=text, sentences_per_chunk=7, overlap=0 )
     print(f"with {len(chunks)} chunks")
     for index, chunk in enumerate(chunks):
-      embed = ollama.embeddings(model=embedmodel, prompt=chunk)['embedding']
-      print(".", end="", flush=True)
-      collection.add([filename+str(index)], [embed], documents=[chunk], metadatas={"source": filename})
+      # here we decide using ollama to generate the embeddings or use the built-in model
+      # of chroma db
+      if embedmodel == "internal":
+        collection.add([filename+str(index)], documents=[chunk], metadatas={"source": filename})
+        print(".", end="", flush=True)      
+      else:
+        embed = ollama.embeddings(model=embedmodel, prompt=chunk)['embedding']
+        print(".", end="", flush=True)
+        collection.add([filename+str(index)], [embed], documents=[chunk], metadatas={"source": filename})
     
 print("--- %s seconds ---" % (time.time() - starttime))
 

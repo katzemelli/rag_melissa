@@ -13,9 +13,13 @@ query = " ".join(sys.argv[1:])
 if query == "":
   #query = "What are the possibilities a GDA650 ?"
   query = "Who won the most recent payling prize award in Oviedo?"
-queryembed = ollama.embeddings(model=embedmodel, prompt=query)['embedding']
+if embedmodel == "internal":
+  queryembed = query
+  relevantdocs = collection.query(query_texts=[queryembed], n_results=1)["documents"][0]
+else:
+  queryembed = ollama.embeddings(model=embedmodel, prompt=query)['embedding']
+  relevantdocs = collection.query(query_embeddings=[queryembed], n_results=1)["documents"][0]
 
-relevantdocs = collection.query(query_embeddings=[queryembed], n_results=1)["documents"][0]
 docs = "\n\n".join(relevantdocs)
 modelquery = f"{query} - Answer that question using the following text as a resource: {docs}"
 
