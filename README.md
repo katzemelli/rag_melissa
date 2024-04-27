@@ -13,10 +13,13 @@ and please install Python in a virtual inviroment.
 
 **Usage:**
 
-check out frist config.ini. In this file we define the main model and also the embedding model used to create the embeddings.
+check out frist config.ini. 
+In this file we define the main model and also the embedding model used to create the embeddings.
+
 For instance:
-mainmodel=llama3
-embedmodel=nomic-embed-text (setting "internal" uses chromadb's embedder.)
+
+* mainmodel=llama3
+* embedmodel=nomic-embed-text (setting "internal" uses chromadb's embedder.)
 
 use generate.py to produce the embeddings according to sourcedocs-2.txt
 cli: python generate.py
