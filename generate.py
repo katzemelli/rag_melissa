@@ -11,9 +11,25 @@
 #if your data files are growing, you should consider preserving the collection and only adding new embeddings
 
 
-import ollama, chromadb, time
+import ollama, chromadb, time, glob, os
 from utilities import readtext, getconfig
 from mattsollamatools import chunk_text_by_sentences
+
+
+def make_embeds(text, filename, collection, embedmodel):
+  chunks = chunk_text_by_sentences(source_text=text, sentences_per_chunk=7, overlap=0 )
+  print(f"with {len(chunks)} chunks")
+  for index, chunk in enumerate(chunks):
+    # here we decide using ollama to generate the embeddings or use the built-in model
+    # of chroma db
+    if embedmodel == "internal":
+      collection.add([filename+str(index)], documents=[chunk], metadatas={"source": filename})
+      print(".", end="", flush=True)      
+    else:
+      embed = ollama.embeddings(model=embedmodel, prompt=chunk)['embedding']
+      print(".", end="", flush=True)
+      collection.add([filename+str(index)], [embed], documents=[chunk], metadatas={"source": filename})
+ 
 
 collectionname="ma-rag-embeddings"
 
@@ -34,21 +50,32 @@ starttime = time.time()
 with open('sourcedocs-2.txt') as f:
   lines = f.readlines()
   for filename in lines:
-    text = readtext(filename)
-    if text == "":
+    # remove trailing whitespace and newline characters
+    filename = filename.replace(' \n', '')
+    filename = filename.replace('\n', '')
+    filename = filename.replace('%0A', '')
+    # check if path is a comment or empty (comment is a line starting with #)
+    if filename.startswith('#') or filename == "":
       continue
-    chunks = chunk_text_by_sentences(source_text=text, sentences_per_chunk=7, overlap=0 )
-    print(f"with {len(chunks)} chunks")
-    for index, chunk in enumerate(chunks):
-      # here we decide using ollama to generate the embeddings or use the built-in model
-      # of chroma db
-      if embedmodel == "internal":
-        collection.add([filename+str(index)], documents=[chunk], metadatas={"source": filename})
-        print(".", end="", flush=True)      
-      else:
-        embed = ollama.embeddings(model=embedmodel, prompt=chunk)['embedding']
-        print(".", end="", flush=True)
-        collection.add([filename+str(index)], [embed], documents=[chunk], metadatas={"source": filename})
+    
+    # next, check if we have file wildcards and if yes, expand them
+    # and read in the files that match the wildcards
+    if filename.find('*') > -1:
+      files = glob.glob(filename, recursive=True)
+      print(f"Files: {list(files)}")
+      for file in files:
+        print(f"processing {file}")
+        text = readtext(file)
+        if text == "":
+          continue
+        make_embeds(text, file, collection, embedmodel)
+    else:
+      print(f"processing {filename}")  
+      text = readtext(filename)
+      if text == "":
+        continue
+      make_embeds(text, filename, collection, embedmodel)
+        
     
 print("--- %s seconds ---" % (time.time() - starttime))
 

@@ -1,5 +1,8 @@
 # you can use this file to produce the embeddings for the model
 # ---
+# test if file recursion works
+/Users/ma/ai-lab/rag/content/*
+# now we read in webpages
 https://www.ew-gds.com
 https://www.ew-gds.com/about-ew-gds/structure-of-ew-gds/
 https://www.ew-gds.com/about-ew-gds/aims-of-ew-gds/

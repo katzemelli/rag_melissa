@@ -57,14 +57,13 @@ def download_file(url):
     return None  # Return None if there was an error
   
 
-      
-def readtext(path):
+# Read text from a file or URL and return it as a string
+# Optionally delete the file after reading      
+def readtext(path, delete=False):
   path = path.rstrip()
   path = path.replace(' \n', '')
   path = path.replace('%0A', '')
-  # check if path is a comment or empty (comment is a line starting with #)
-  if path.startswith('#') or path == "":
-    return ""
+
   if re.match(r'^https?://', path):
     filename = download_file(path)
   else:
@@ -81,13 +80,13 @@ def readtext(path):
     print('PDF not supported yet')
   if filetype == 'text/plain':
     with open(filename, 'rb') as f:
-      text = f.read().decode('utf-8')
+      text = f.read().decode('utf-8', errors='ignore')
   if filetype == 'text/html':
     with open(filename, 'rb') as f:
       soup = BeautifulSoup(f, 'html.parser')
       text = soup.get_text()
   
-  if os.path.exists(filename) and filename.find('content/') > -1:
+  if delete and os.path.exists(filename) and filename.find('content/') > -1:
     os.remove(filename) 
     
   return text
