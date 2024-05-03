@@ -1,6 +1,8 @@
 # rag
 
-how to use rag with ollama
+how to use rag with ollama. 
+
+Based on Matt Williams tutorial at https://github.com/technovangelist/videoprojects
 
 **Requirements:**
 
@@ -13,7 +15,7 @@ and please install Python in a virtual inviroment.
 
 **Usage:**
 
-check out frist config.ini. 
+check out frist config.ini.
 In this file we define the main model and also the embedding model used to create the embeddings.
 
 For instance:
